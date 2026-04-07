@@ -1,0 +1,16 @@
+# 忽略官方源码和安装包
+habitat-lab/
+gym/
+miniconda3/
+
+# 忽略数据文件夹中的大头，只保留 113MB 的验证数据
+# 如果你的 113MB 数据就在 data/ 下，我们先全排除，再手动加回
+data/scene_datasets/mp3d/
+data/checkpoints/
+data/tensorboard_dirs/
+
+# 忽略系统与缓存
+**/__pycache__/
+*.pyc
+.DS_Store
+.ipynb_checkpoints/
