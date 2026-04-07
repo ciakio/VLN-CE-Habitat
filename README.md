@@ -84,10 +84,10 @@ conda env remove -n test
 #### 1. 创建虚拟环境
 
 ```
-conda create -n navclaw python=3.9 -y
-conda activate navclaw
+conda create -n old_vlnce python=3.9 -y
+conda activate old_vlnce
 Habitat 依赖较多，使用 conda 进行环境隔离。Habitat 对 python3.9 版本兼容最好。
-至此有了 dl_env（另用）和 navclaw（该项目）两个conda环境，具体配置可用前面命令行查看
+至此有了 dl_env（另用）和 old_vlnce（该项目）两个conda环境，具体配置可用前面命令行查看
 ```
 
 #### 2. 介绍 Habitat-Sim & Lab
@@ -177,7 +177,7 @@ import gym
 from habitat.config.default import get_config
 
 print('\n' + '='*50)
-print('--- NavCLAW 全链路最终检查 (降级 absl 后) ---')
+print('--- 全链路最终检查 (降级 absl 后) ---')
 
 # 1. 检查 Torch
 print(f'1. [大脑] Torch GPU (4060): {torch.cuda.is_available()}')
@@ -205,13 +205,13 @@ if torch.cuda.is_available() and 'habitat' in dir():
 "
 ```
 
-**navclaw（已删嘻嘻）**：第一版有问题，命令行如上，被remove误删了，没事没逝，反正和第二版一样都是不能用的，配置文件cd没写好，好多依赖版本错了。
+**old_vlnce（已删嘻嘻）**：第一版有问题，命令行如上，被remove误删了，没事没逝，反正和第二版一样都是不能用的，配置文件cd没写好，好多依赖版本错了。
 
-**navclaw0**：第二版，有问题，命令行集成总结如下，第一次之后git，tar都可以省略了。
+**old_vlnce0**：第二版，有问题，命令行集成总结如下，第一次之后git，tar都可以省略了。
 
 ```
-conda create -n navclaw0 python=3.9 -y
-conda activate navclaw0
+conda create -n old_vlnce0 python=3.9 -y
+conda activate old_vlnce0
 conda config --set ssl_verify False
 conda install habitat-sim=0.3.0 withbullet libxcb=1.15 --override-channels -c aihabitat -c conda-forge -y
 conda config --set ssl_verify True
@@ -242,7 +242,7 @@ pip install importlib-metadata cloudpickle gym_notices numpy \
 
 上述仍有诸多问题，numpy等版本号过高没有指定正确版本，环境变量未配置没有恰当的cd
 
-**navclaw1**：第三版，不知道有没有问题，命令行集成总结如下
+**old_vlnce1**：第三版，不知道有没有问题，命令行集成总结如下，后面改名去掉1了。
 
 ```
 # 1. 在安装 Python 环境前，必须确保系统有渲染 3D 图像的基础库。
@@ -251,8 +251,8 @@ sudo apt-get install -y \
     libcap-dev libglfw3-dev libjpeg-dev libpng-dev \
     libvulkan-dev libxcursor-dev libxinerama-dev libxi-dev \
     build-essential cmake git libxcb-util1
-conda create -n navclaw1 python=3.9 -y
-conda activate navclaw1
+conda create -n old_vlnce1 python=3.9 -y
+conda activate old_vlnce1
 
 # 2. 优先锁死基础包版本，防止后面自动升级
 pip install "numpy==1.23.5" "setuptools==65.5.0" "wheel" -i https://pypi.tuna.tsinghua.edu.cn/simple
@@ -329,7 +329,7 @@ python test3.py
 
 ### 第三阶段：实战演练
 
-**确保处于 navclaw1 环境，在 Habitat_projects/habitat-lab 目录**
+**确保处于 old_vlnce 环境，在 Habitat_projects/habitat-lab 目录**
 
 ```
 在第一步准备任务数据集时，官网404根本没用，意外找到后面三步所有代码
@@ -339,7 +339,7 @@ data中的二进制文件是VLN-CE下载时其data文件自带的不能删除，
 cd ~
 git clone https://github.com/jacobkrantz/VLN-CE.git
 
-【NavCLAW 核心代码】
+【old_vlnce 核心代码】
 vlnce_baselines/models/encoders/  # 视觉 + 语言编码器（CLIP / VLM 核心）
 ├── instruction_encoder.py   # 语言编码器：听懂“去厨房”
 └── resnet_encoders.py       # 视觉编码器：看懂画面（冰箱/门/墙）
@@ -410,9 +410,9 @@ wget https://dl.fbaipublicfiles.com/habitat/data/datasets/vln/vln_ce/v1.tar.gz
 tar -xvf v1.tar.gz
 ```
 
-#### 2. 部署 NavCLAW 核心代码（给机器人安眼睛和大脑）
+#### 2. 部署 VLN-CE 核心代码（给机器人安眼睛和大脑）
 
-- **VLM Encoder (CLIP)**：这是给机器人安上一双**懂中文/英文的眼睛**。普通的机器人只看到像素，NavCLAW 通过 CLIP，能理解画面里那个白色的方块叫“冰箱”。
+- **VLM Encoder (CLIP)**：这是给机器人安上一双**懂中文/英文的眼睛**。普通的机器人只看到像素，通过 CLIP，能理解画面里那个白色的方块叫“冰箱”。
   
 - **本质**：就是这一步让 **Sim** 和 **VLM** 大语言模型的自然语言能力结合起来，变得像 **gemini** 一样智慧
   
@@ -603,7 +603,7 @@ python run.py --run-type train --exp-config vlnce_baselines/config/r2r_baselines
 
 #### 第一部分：核心大脑 (vlnce_baselines/models/)
 
-这里是 NavCLAW 的“神经网络中心”，负责处理“看到什么”和“听到什么”，并决定“怎么走”。
+这里是 “神经网络中心”，负责处理“看到什么”和“听到什么”，并决定“怎么走”。
 
 ##### 1. 视觉与语言编码器 (encoders/)
 
@@ -611,17 +611,17 @@ python run.py --run-type train --exp-config vlnce_baselines/config/r2r_baselines
   - **原理**：利用 GRU 或 Transformer 将人类的自然语言指令（如"走进厨房"）转化成一串数学向量（Embedding）。
   - **功能**：它不仅记录单词的意思，还通过双向网络记录语序。它是机器人理解任务的起点。
 - **`resnet_encoders.py` (眼睛)**：
-  - **原理**：这是 NavCLAW 最吃显存的地方。它利用预训练的 ResNet 或 **CLIP** 提取每一帧画面的特征。
+  - **原理**：这是最吃显存的地方。它利用预训练的 ResNet 或 **CLIP** 提取每一帧画面的特征。
   - **功能**：它把 4060 渲染出的像素矩阵，压缩成一个代表语义的特征向量。例如，它能从像素中识别出“木质纹理”和“把手”，从而暗示“门”的存在。
 
 ##### 2. 策略网络 (Policy 层)
 
 - **`cma_policy.py` (交叉模态注意力机制 - 核心)**：
-  - **原理**：CMA 是 **Cross-Modal Attention** 的缩写。这是 NavCLAW 的精髓。
+  - **原理**：CMA 是 **Cross-Modal Attention** 的缩写，这是精髓。
   - **逻辑**：它像一个翻译官，不断地问：“指令里说的‘蓝色沙发’，对应我现在看到的哪一堆像素？”
   - **功能**：它将视觉特征和语言特征进行动态对齐。只有对齐了，机器人才能产生“看到沙发就右转”的冲动。
 - **`waypoint_policy.py` & `waypoint_predictors.py` (路径规划)**：
-  - **原理**：NavCLAW 不是简单的“前后左右”，而是预测一个**路点 (Waypoint)**。
+  - **原理**：VLN-CE不是简单的“前后左右”，而是预测一个**路点 (Waypoint)**。
   - **功能**：它会预测下一个最佳落脚点的坐标和角度。这使得导航比逐帧步进更高效、更像人类。
 
 #### 第二部分：神经系统 (habitat_extensions/)
@@ -665,7 +665,7 @@ python run.py --run-type train --exp-config vlnce_baselines/config/r2r_baselines
 这是你花时间最多、报错最频繁的地方。
 
 - **`vlnce_baselines/config/default.py` (DNA库)**：
-  - 它定义了 NavCLAW 的所有参数：学习率、显卡 ID、视频存哪、CLIP 模型的路径。
+  - 它定义了所有参数：学习率、显卡 ID、视频存哪、CLIP 模型的路径。
   - **原理**：它利用 `YACS (CfgNode)` 建立了一棵树。你之前的 `set_new_allowed(True)` 就像是给这棵树开了“侧芽许可”，允许新版 Habitat 的参数长在旧版的树干上。
 - **`run.py` (总指挥部)**：
   - **功能**：它是唯一的入口。它负责加载配置、初始化显卡、挂载注册表（Baseline Registry）、并启动 Trainer。
